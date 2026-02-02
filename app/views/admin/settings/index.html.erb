@@ -1,0 +1,181 @@
+<div class="mb-8">
+  <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Settings</h1>
+  <p class="text-white/40 text-sm mt-1">Configure your SMTP server, sending rate, and site settings.</p>
+</div>
+
+<%= form_with url: admin_settings_path, method: :patch, class: "space-y-8" do %>
+
+  <!-- SMTP Settings -->
+  <div class="glass-card-static rounded-2xl overflow-hidden">
+    <div class="p-6 border-b border-white/10 flex items-center justify-between">
+      <div>
+        <h2 class="text-lg font-semibold text-white/90">SMTP Configuration</h2>
+        <p class="text-white/40 text-xs mt-1">Configure your email sending server.</p>
+      </div>
+      <button type="button" id="test-smtp-btn" class="glass-button px-4 py-2 rounded-xl text-sm font-medium inline-flex items-center gap-2" onclick="testSmtp()">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        Test Connection
+      </button>
+    </div>
+    <div class="p-6 space-y-5">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div>
+          <label class="block text-sm font-medium text-white/60 mb-2">SMTP Server Address</label>
+          <input type="text" name="settings[smtp_address]" value="<%= @settings['smtp_address'] %>" class="glass-input w-full px-4 py-3 rounded-xl text-sm" placeholder="smtp.example.com" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-white/60 mb-2">Port</label>
+          <input type="number" name="settings[smtp_port]" value="<%= @settings['smtp_port'] %>" class="glass-input w-full px-4 py-3 rounded-xl text-sm" placeholder="587" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div>
+          <label class="block text-sm font-medium text-white/60 mb-2">Username</label>
+          <input type="text" name="settings[smtp_username]" value="<%= @settings['smtp_username'] %>" class="glass-input w-full px-4 py-3 rounded-xl text-sm" placeholder="your@email.com" autocomplete="off" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-white/60 mb-2">Password</label>
+          <input type="password" name="settings[smtp_password]" value="<%= @settings['smtp_password'] %>" class="glass-input w-full px-4 py-3 rounded-xl text-sm" placeholder="••••••••" autocomplete="off" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div>
+          <label class="block text-sm font-medium text-white/60 mb-2">Authentication Method</label>
+          <select name="settings[smtp_authentication]" class="glass-input w-full px-4 py-3 rounded-xl text-sm">
+            <option value="plain" <%= 'selected' if @settings['smtp_authentication'] == 'plain' %>>Plain</option>
+            <option value="login" <%= 'selected' if @settings['smtp_authentication'] == 'login' %>>Login</option>
+            <option value="cram_md5" <%= 'selected' if @settings['smtp_authentication'] == 'cram_md5' %>>CRAM-MD5</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-white/60 mb-2">Domain (HELO)</label>
+          <input type="text" name="settings[smtp_domain]" value="<%= @settings['smtp_domain'] %>" class="glass-input w-full px-4 py-3 rounded-xl text-sm" placeholder="example.com" />
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <input type="hidden" name="settings[smtp_enable_starttls]" value="false" />
+        <input type="checkbox" name="settings[smtp_enable_starttls]" value="true" <%= 'checked' if @settings['smtp_enable_starttls'] == 'true' %> class="w-4 h-4 rounded accent-purple-500" id="starttls" />
+        <label for="starttls" class="text-sm text-white/70">Enable STARTTLS</label>
+      </div>
+    </div>
+
+    <div id="smtp-result" class="hidden mx-6 mb-6 p-4 rounded-xl text-sm"></div>
+  </div>
+
+  <!-- Sender Settings -->
+  <div class="glass-card-static rounded-2xl overflow-hidden">
+    <div class="p-6 border-b border-white/10">
+      <h2 class="text-lg font-semibold text-white/90">Sender Information</h2>
+      <p class="text-white/40 text-xs mt-1">The name and email address that appear in sent emails.</p>
+    </div>
+    <div class="p-6 space-y-5">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div>
+          <label class="block text-sm font-medium text-white/60 mb-2">From Name</label>
+          <input type="text" name="settings[from_name]" value="<%= @settings['from_name'] %>" class="glass-input w-full px-4 py-3 rounded-xl text-sm" placeholder="Newsletter" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-white/60 mb-2">From Email</label>
+          <input type="email" name="settings[from_email]" value="<%= @settings['from_email'] %>" class="glass-input w-full px-4 py-3 rounded-xl text-sm" placeholder="newsletter@example.com" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rate Limiting -->
+  <div class="glass-card-static rounded-2xl overflow-hidden">
+    <div class="p-6 border-b border-white/10">
+      <h2 class="text-lg font-semibold text-white/90">Sending Rate Limit</h2>
+      <p class="text-white/40 text-xs mt-1">Control how fast emails are sent to avoid being flagged as spam.</p>
+    </div>
+    <div class="p-6">
+      <div class="flex items-center gap-4">
+        <div class="flex-1">
+          <label class="block text-sm font-medium text-white/60 mb-2">Number of Emails</label>
+          <input type="number" name="settings[rate_limit]" value="<%= @settings['rate_limit'] %>" min="1" max="100" class="glass-input w-full px-4 py-3 rounded-xl text-sm" />
+        </div>
+        <div class="text-white/40 text-sm pt-6">per</div>
+        <div class="flex-1">
+          <label class="block text-sm font-medium text-white/60 mb-2">Time Period</label>
+          <select name="settings[rate_period]" class="glass-input w-full px-4 py-3 rounded-xl text-sm">
+            <option value="second" <%= 'selected' if @settings['rate_period'] == 'second' %>>Second</option>
+            <option value="minute" <%= 'selected' if @settings['rate_period'] == 'minute' %>>Minute</option>
+            <option value="hour" <%= 'selected' if @settings['rate_period'] == 'hour' %>>Hour</option>
+          </select>
+        </div>
+      </div>
+      <p class="text-white/30 text-xs mt-3">
+        Current rate: <%= @settings['rate_limit'] %> email(s) per <%= @settings['rate_period'] %>
+      </p>
+    </div>
+  </div>
+
+  <!-- Site Settings -->
+  <div class="glass-card-static rounded-2xl overflow-hidden">
+    <div class="p-6 border-b border-white/10">
+      <h2 class="text-lg font-semibold text-white/90">Site Settings</h2>
+      <p class="text-white/40 text-xs mt-1">General configuration for your newsletter site.</p>
+    </div>
+    <div class="p-6 space-y-5">
+      <div>
+        <label class="block text-sm font-medium text-white/60 mb-2">Site Name</label>
+        <input type="text" name="settings[site_name]" value="<%= @settings['site_name'] %>" class="glass-input w-full px-4 py-3 rounded-xl text-sm" placeholder="My Newsletter" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-white/60 mb-2">Site Description</label>
+        <textarea name="settings[site_description]" rows="2" class="glass-input w-full px-4 py-3 rounded-xl text-sm" placeholder="A brief description of your newsletter..."><%= @settings['site_description'] %></textarea>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-white/60 mb-2">Unsubscribe Footer Message</label>
+        <textarea name="settings[unsubscribe_message]" rows="2" class="glass-input w-full px-4 py-3 rounded-xl text-sm" placeholder="Why recipients are receiving this email..."><%= @settings['unsubscribe_message'] %></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex justify-end">
+    <button type="submit" class="gradient-button px-8 py-3 rounded-xl font-semibold text-sm">
+      <span>Save Settings</span>
+    </button>
+  </div>
+<% end %>
+
+<script>
+  function testSmtp() {
+    const btn = document.getElementById('test-smtp-btn');
+    const result = document.getElementById('smtp-result');
+    btn.disabled = true;
+    btn.innerHTML = '<svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> Testing...';
+
+    fetch('<%= admin_test_smtp_settings_path %>', {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    })
+    .then(r => r.json())
+    .then(data => {
+      result.classList.remove('hidden');
+      if (data.success) {
+        result.className = 'mx-6 mb-6 p-4 rounded-xl text-sm border border-green-400/30 text-green-300 bg-green-400/10';
+        result.textContent = data.message;
+      } else {
+        result.className = 'mx-6 mb-6 p-4 rounded-xl text-sm border border-red-400/30 text-red-300 bg-red-400/10';
+        result.textContent = data.message;
+      }
+    })
+    .catch(err => {
+      result.classList.remove('hidden');
+      result.className = 'mx-6 mb-6 p-4 rounded-xl text-sm border border-red-400/30 text-red-300 bg-red-400/10';
+      result.textContent = 'Connection test failed: ' + err.message;
+    })
+    .finally(() => {
+      btn.disabled = false;
+      btn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> Test Connection';
+    });
+  }
+</script>

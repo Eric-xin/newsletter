@@ -1,0 +1,68 @@
+<div class="mb-8 flex items-center justify-between">
+  <div>
+    <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Newsletters</h1>
+    <p class="text-white/40 text-sm mt-1">Manage your email newsletters.</p>
+  </div>
+  <a href="<%= new_admin_newsletter_path %>" class="gradient-button px-5 py-3 rounded-xl text-sm font-semibold inline-flex items-center gap-2">
+    <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+    <span>New Newsletter</span>
+  </a>
+</div>
+
+<div class="glass-card-static rounded-2xl overflow-hidden">
+  <% if @newsletters.any? %>
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Subject</th>
+          <th>Status</th>
+          <th>Visibility</th>
+          <th>Sent At</th>
+          <th>Created</th>
+          <th class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @newsletters.each do |newsletter| %>
+          <tr>
+            <td>
+              <a href="<%= admin_newsletter_path(newsletter) %>" class="text-white/90 hover:text-purple-300 transition-colors font-medium">
+                <%= newsletter.subject %>
+              </a>
+            </td>
+            <td><span class="badge badge-<%= newsletter.status %>"><%= newsletter.status.capitalize %></span></td>
+            <td>
+              <% if newsletter.is_public %>
+                <span class="badge badge-public">Public</span>
+              <% else %>
+                <span class="text-white/40 text-xs">Private</span>
+              <% end %>
+            </td>
+            <td class="text-white/40 text-xs"><%= newsletter.sent_at&.strftime("%b %d, %Y %l:%M %p") || "—" %></td>
+            <td class="text-white/40 text-xs"><%= newsletter.created_at.strftime("%b %d, %Y") %></td>
+            <td class="text-right">
+              <div class="flex items-center justify-end gap-2">
+                <a href="<%= edit_admin_newsletter_path(newsletter) %>" class="glass-button px-3 py-1.5 rounded-lg text-xs">Edit</a>
+                <% if newsletter.draft? %>
+                  <%= button_to "Send", send_newsletter_admin_newsletter_path(newsletter), method: :post, class: "success-button px-3 py-1.5 rounded-lg text-xs", form: { data: { turbo_confirm: "Send this newsletter to all subscribers?" } } %>
+                <% end %>
+                <%= button_to "Delete", admin_newsletter_path(newsletter), method: :delete, class: "danger-button px-3 py-1.5 rounded-lg text-xs", form: { data: { turbo_confirm: "Are you sure?" } } %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div class="p-16 text-center">
+      <div class="w-16 h-16 mx-auto mb-6 rounded-full bg-white/5 flex items-center justify-center">
+        <svg class="w-8 h-8 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+      </div>
+      <h3 class="text-lg font-medium text-white/60 mb-2">No Newsletters</h3>
+      <p class="text-white/30 text-sm mb-6">Create your first newsletter to get started.</p>
+      <a href="<%= new_admin_newsletter_path %>" class="gradient-button px-6 py-3 rounded-xl text-sm font-semibold inline-block">
+        <span>Create Newsletter</span>
+      </a>
+    </div>
+  <% end %>
+</div>

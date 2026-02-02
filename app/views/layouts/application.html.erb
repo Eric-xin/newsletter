@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || Setting.get("site_name") %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="min-h-screen animated-bg text-white">
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-nav">
+      <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a href="<%= root_path %>" class="text-2xl font-bold tracking-tight bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">
+          <%= Setting.get("site_name") %>
+        </a>
+        <div class="flex items-center gap-6">
+          <a href="<%= root_path %>" class="nav-link text-sm font-medium text-white/80 hover:text-white transition-colors">Home</a>
+          <a href="<%= announcements_path %>" class="nav-link text-sm font-medium text-white/80 hover:text-white transition-colors">Announcements</a>
+          <a href="<%= login_path %>" class="glass-button text-sm font-medium px-4 py-2 rounded-full">Admin</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <% if notice %>
+      <div class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 glass-card px-6 py-3 rounded-xl border border-green-400/30 text-green-200 animate-fade-in">
+        <%= notice %>
+      </div>
+    <% end %>
+    <% if alert %>
+      <div class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 glass-card px-6 py-3 rounded-xl border border-red-400/30 text-red-200 animate-fade-in">
+        <%= alert %>
+      </div>
+    <% end %>
+
+    <main class="pt-24 min-h-screen">
+      <%= yield %>
+    </main>
+
+    <!-- Footer -->
+    <footer class="glass-nav mt-20 py-8">
+      <div class="max-w-7xl mx-auto px-6 text-center text-white/50 text-sm">
+        <p>&copy; <%= Date.today.year %> <%= Setting.get("site_name") %>. All rights reserved.</p>
+      </div>
+    </footer>
+  </body>
+</html>

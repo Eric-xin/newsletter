@@ -1,0 +1,44 @@
+<div class="min-h-screen flex items-center justify-center px-6">
+  <div class="w-full max-w-md">
+    <div class="glass-card-static rounded-3xl p-10">
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">Admin Login</h1>
+        <p class="text-white/40 text-sm">Sign in to manage your newsletter</p>
+      </div>
+
+      <%= form_with url: login_path, method: :post, class: "space-y-5" do %>
+        <div>
+          <label class="block text-sm font-medium text-white/60 mb-2">Username</label>
+          <input
+            type="text"
+            name="username"
+            required
+            autocomplete="username"
+            class="glass-input w-full px-4 py-3 rounded-xl text-sm"
+            placeholder="Enter your username"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-white/60 mb-2">Password</label>
+          <input
+            type="password"
+            name="password"
+            required
+            autocomplete="current-password"
+            class="glass-input w-full px-4 py-3 rounded-xl text-sm"
+            placeholder="Enter your password"
+          />
+        </div>
+
+        <button type="submit" class="gradient-button w-full py-3 rounded-xl font-semibold text-sm">
+          <span>Sign In</span>
+        </button>
+      <% end %>
+
+      <div class="mt-6 text-center">
+        <a href="<%= root_path %>" class="text-white/30 text-xs hover:text-white/50 transition-colors">Back to home</a>
+      </div>
+    </div>
+  </div>
+</div>

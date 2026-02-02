@@ -1,0 +1,159 @@
+<!-- Hero Section -->
+<section class="relative overflow-hidden">
+  <div class="floating-orb floating-orb-1"></div>
+  <div class="floating-orb floating-orb-2"></div>
+  <div class="floating-orb floating-orb-3"></div>
+
+  <div class="max-w-4xl mx-auto px-6 py-24 text-center relative z-10">
+    <div class="animate-slide-up">
+      <h1 class="text-6xl md:text-7xl font-extrabold mb-6 leading-tight">
+        <span class="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+          Stay Informed
+        </span>
+      </h1>
+      <p class="text-xl md:text-2xl text-white/60 mb-12 max-w-2xl mx-auto leading-relaxed">
+        <%= @site_description %>
+      </p>
+    </div>
+
+    <!-- Subscribe Form -->
+    <div class="animate-slide-up max-w-md mx-auto" style="animation-delay: 0.2s;">
+      <%= form_with url: subscribe_path, method: :post, class: "flex gap-3" do %>
+        <input
+          type="email"
+          name="email"
+          placeholder="Enter your email address"
+          required
+          class="glass-input flex-1 px-5 py-4 rounded-2xl text-sm"
+        />
+        <button type="submit" class="gradient-button px-8 py-4 rounded-2xl font-semibold text-sm animate-pulse-glow">
+          <span>Subscribe</span>
+        </button>
+      <% end %>
+      <p class="text-white/30 text-xs mt-4">No spam. Unsubscribe at any time.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="max-w-6xl mx-auto px-6 py-20">
+  <div class="text-center mb-16">
+    <h2 class="text-3xl font-bold mb-4 text-white/90">Why Subscribe?</h2>
+    <p class="text-white/50 max-w-xl mx-auto">Get the latest updates delivered directly to your inbox.</p>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-6">
+    <div class="glass-card rounded-2xl p-8 stagger-item animate-slide-up">
+      <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-600/20 flex items-center justify-center mb-5">
+        <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      </div>
+      <h3 class="text-lg font-semibold mb-3 text-white/90">Instant Delivery</h3>
+      <p class="text-white/50 text-sm leading-relaxed">Receive newsletters the moment they're published. Never miss an important update.</p>
+    </div>
+
+    <div class="glass-card rounded-2xl p-8 stagger-item animate-slide-up">
+      <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-purple-600/20 flex items-center justify-center mb-5">
+        <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      </div>
+      <h3 class="text-lg font-semibold mb-3 text-white/90">Privacy First</h3>
+      <p class="text-white/50 text-sm leading-relaxed">Your email is safe with us. We never share your data with third parties.</p>
+    </div>
+
+    <div class="glass-card rounded-2xl p-8 stagger-item animate-slide-up">
+      <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500/20 to-pink-600/20 flex items-center justify-center mb-5">
+        <svg class="w-6 h-6 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+      </div>
+      <h3 class="text-lg font-semibold mb-3 text-white/90">Easy Unsubscribe</h3>
+      <p class="text-white/50 text-sm leading-relaxed">Changed your mind? One-click unsubscribe in every email. No questions asked.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Public Announcements Preview -->
+<% recent_announcements = Newsletter.public_newsletters.sent.order(sent_at: :desc).limit(3) %>
+<% if recent_announcements.any? %>
+<section class="max-w-6xl mx-auto px-6 py-20">
+  <div class="text-center mb-12">
+    <h2 class="text-3xl font-bold mb-4 text-white/90">Latest Announcements</h2>
+    <p class="text-white/50">Read our most recent public newsletters.</p>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-6 mb-8">
+    <% recent_announcements.each do |newsletter| %>
+      <a href="<%= announcement_path(newsletter) %>" class="glass-card rounded-2xl p-6 block">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="badge badge-public">Public</span>
+          <span class="text-white/30 text-xs"><%= newsletter.sent_at&.strftime("%b %d, %Y") %></span>
+        </div>
+        <h3 class="text-lg font-semibold text-white/90 mb-2"><%= newsletter.subject %></h3>
+        <p class="text-white/40 text-sm">Click to read the full announcement.</p>
+      </a>
+    <% end %>
+  </div>
+
+  <div class="text-center">
+    <a href="<%= announcements_path %>" class="glass-button px-6 py-3 rounded-xl text-sm font-medium inline-block">
+      View All Announcements
+    </a>
+  </div>
+</section>
+<% end %>
+
+<!-- FAQ Section -->
+<section class="max-w-3xl mx-auto px-6 py-20">
+  <div class="text-center mb-12">
+    <h2 class="text-3xl font-bold mb-4 text-white/90">Frequently Asked Questions</h2>
+  </div>
+
+  <div class="space-y-4">
+    <details class="faq-item glass-card-static rounded-2xl overflow-hidden">
+      <summary class="flex items-center justify-between p-6 cursor-pointer">
+        <span class="font-medium text-white/90">What kind of content will I receive?</span>
+        <svg class="faq-chevron w-5 h-5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-6 pb-6 text-white/50 text-sm leading-relaxed">
+        You'll receive curated newsletters covering the latest updates, announcements, and important information. We keep our content relevant and valuable.
+      </div>
+    </details>
+
+    <details class="faq-item glass-card-static rounded-2xl overflow-hidden">
+      <summary class="flex items-center justify-between p-6 cursor-pointer">
+        <span class="font-medium text-white/90">How often will I receive emails?</span>
+        <svg class="faq-chevron w-5 h-5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-6 pb-6 text-white/50 text-sm leading-relaxed">
+        We only send emails when there's something truly worth sharing. Expect occasional updates, not daily spam. Quality over quantity is our motto.
+      </div>
+    </details>
+
+    <details class="faq-item glass-card-static rounded-2xl overflow-hidden">
+      <summary class="flex items-center justify-between p-6 cursor-pointer">
+        <span class="font-medium text-white/90">Can I unsubscribe at any time?</span>
+        <svg class="faq-chevron w-5 h-5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-6 pb-6 text-white/50 text-sm leading-relaxed">
+        Absolutely! Every email includes an unsubscribe link at the bottom. One click and you're off the list immediately. No hard feelings.
+      </div>
+    </details>
+
+    <details class="faq-item glass-card-static rounded-2xl overflow-hidden">
+      <summary class="flex items-center justify-between p-6 cursor-pointer">
+        <span class="font-medium text-white/90">Is my email address safe?</span>
+        <svg class="faq-chevron w-5 h-5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-6 pb-6 text-white/50 text-sm leading-relaxed">
+        Yes, your privacy is important to us. We never sell, share, or trade your email address with any third party. Your information is stored securely.
+      </div>
+    </details>
+
+    <details class="faq-item glass-card-static rounded-2xl overflow-hidden">
+      <summary class="flex items-center justify-between p-6 cursor-pointer">
+        <span class="font-medium text-white/90">Can I view announcements without subscribing?</span>
+        <svg class="faq-chevron w-5 h-5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-6 pb-6 text-white/50 text-sm leading-relaxed">
+        Yes! Public announcements are available on our <a href="<%= announcements_path %>" class="text-purple-400 hover:text-purple-300 underline">Announcements</a> page. Subscribe to get them delivered directly to your inbox.
+      </div>
+    </details>
+  </div>
+</section>

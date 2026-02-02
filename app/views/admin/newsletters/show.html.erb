@@ -1,0 +1,38 @@
+<div class="mb-8">
+  <a href="<%= admin_newsletters_path %>" class="inline-flex items-center gap-2 text-white/40 hover:text-white/70 text-sm mb-4 transition-colors">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+    Back to Newsletters
+  </a>
+  <div class="flex items-start justify-between">
+    <div>
+      <h1 class="text-3xl font-bold text-white/95"><%= @newsletter.subject %></h1>
+      <div class="flex items-center gap-3 mt-3">
+        <span class="badge badge-<%= @newsletter.status %>"><%= @newsletter.status.capitalize %></span>
+        <% if @newsletter.is_public %>
+          <span class="badge badge-public">Public</span>
+        <% end %>
+        <% if @newsletter.sent_at %>
+          <span class="text-white/30 text-sm">Sent <%= @newsletter.sent_at.strftime("%B %d, %Y at %l:%M %p") %></span>
+        <% end %>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <a href="<%= edit_admin_newsletter_path(@newsletter) %>" class="glass-button px-4 py-2 rounded-xl text-sm font-medium">Edit</a>
+      <% if @newsletter.draft? %>
+        <%= button_to "Send Newsletter", send_newsletter_admin_newsletter_path(@newsletter), method: :post, class: "success-button px-4 py-2 rounded-xl text-sm font-medium", form: { data: { turbo_confirm: "Send this newsletter to all active subscribers?" } } %>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<!-- Preview -->
+<div class="glass-card-static rounded-2xl overflow-hidden">
+  <div class="p-4 border-b border-white/10">
+    <h2 class="text-sm font-medium text-white/50">Email Preview</h2>
+  </div>
+  <div class="p-6">
+    <div class="preview-frame p-8 rounded-xl">
+      <%= @newsletter.body.html_safe %>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Admin - <%= Setting.get("site_name") %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="min-h-screen animated-bg text-white">
+    <div class="flex min-h-screen">
+      <!-- Sidebar -->
+      <% if session[:admin_id] %>
+      <aside class="w-64 glass-sidebar fixed top-0 left-0 h-full z-40 flex flex-col">
+        <div class="p-6 border-b border-white/10">
+          <a href="<%= admin_dashboard_path %>" class="text-xl font-bold bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">
+            Admin Panel
+          </a>
+        </div>
+        <nav class="flex-1 p-4 space-y-1">
+          <a href="<%= admin_dashboard_path %>" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-white/70 hover:text-white hover:bg-white/10 transition-all">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            Dashboard
+          </a>
+          <a href="<%= admin_newsletters_path %>" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-white/70 hover:text-white hover:bg-white/10 transition-all">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            Newsletters
+          </a>
+          <a href="<%= admin_subscribers_path %>" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-white/70 hover:text-white hover:bg-white/10 transition-all">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            Subscribers
+          </a>
+          <a href="<%= admin_settings_path %>" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-white/70 hover:text-white hover:bg-white/10 transition-all">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            Settings
+          </a>
+        </nav>
+        <div class="p-4 border-t border-white/10">
+          <div class="flex items-center justify-between px-4 py-2">
+            <a href="<%= root_path %>" class="text-xs text-white/50 hover:text-white/80 transition-colors">View Site</a>
+            <%= button_to "Logout", logout_path, method: :delete, class: "text-xs text-red-300/70 hover:text-red-300 transition-colors", form: { class: "inline" } %>
+          </div>
+        </div>
+      </aside>
+      <% end %>
+
+      <!-- Main Content -->
+      <div class="<%= session[:admin_id] ? 'ml-64' : '' %> flex-1 min-h-screen">
+        <% if notice %>
+          <div class="fixed top-4 right-4 z-50 glass-card px-6 py-3 rounded-xl border border-green-400/30 text-green-200 animate-fade-in">
+            <%= notice %>
+          </div>
+        <% end %>
+        <% if alert %>
+          <div class="fixed top-4 right-4 z-50 glass-card px-6 py-3 rounded-xl border border-red-400/30 text-red-200 animate-fade-in">
+            <%= alert %>
+          </div>
+        <% end %>
+
+        <div class="p-8">
+          <%= yield %>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

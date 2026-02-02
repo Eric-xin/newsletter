@@ -1,0 +1,35 @@
+<div class="max-w-4xl mx-auto px-6 py-12">
+  <div class="text-center mb-12">
+    <h1 class="text-4xl font-bold mb-4">
+      <span class="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Announcements</span>
+    </h1>
+    <p class="text-white/50">Public newsletters and updates from <%= @site_name %>.</p>
+  </div>
+
+  <% if @newsletters.any? %>
+    <div class="space-y-4">
+      <% @newsletters.each do |newsletter| %>
+        <a href="<%= announcement_path(newsletter) %>" class="glass-card rounded-2xl p-6 block stagger-item animate-slide-up">
+          <div class="flex items-start justify-between">
+            <div>
+              <h2 class="text-lg font-semibold text-white/90 mb-2"><%= newsletter.subject %></h2>
+              <div class="flex items-center gap-3">
+                <span class="badge badge-public">Public</span>
+                <span class="text-white/30 text-xs"><%= newsletter.sent_at&.strftime("%B %d, %Y") %></span>
+              </div>
+            </div>
+            <svg class="w-5 h-5 text-white/30 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </div>
+        </a>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="glass-card-static rounded-3xl p-16 text-center">
+      <div class="w-16 h-16 mx-auto mb-6 rounded-full bg-white/5 flex items-center justify-center">
+        <svg class="w-8 h-8 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+      </div>
+      <h3 class="text-lg font-medium text-white/60 mb-2">No Announcements Yet</h3>
+      <p class="text-white/30 text-sm">Check back later for public updates.</p>
+    </div>
+  <% end %>
+</div>

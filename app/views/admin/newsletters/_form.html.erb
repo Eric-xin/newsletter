@@ -1,0 +1,45 @@
+<%= form_with model: [:admin, newsletter], class: "space-y-6", data: { controller: "newsletter-editor" } do |f| %>
+  <% if newsletter.errors.any? %>
+    <div class="glass-card-static rounded-xl p-4 border border-red-400/30">
+      <p class="text-red-300 text-sm font-medium mb-2"><%= pluralize(newsletter.errors.count, "error") %> prevented this newsletter from being saved:</p>
+      <ul class="list-disc list-inside text-red-300/70 text-sm space-y-1">
+        <% newsletter.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <label class="block text-sm font-medium text-white/60 mb-2">Subject</label>
+    <%= f.text_field :subject, class: "glass-input w-full px-4 py-3 rounded-xl text-sm", placeholder: "Newsletter subject line" %>
+  </div>
+
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="block text-sm font-medium text-white/60">Body (HTML)</label>
+      <button type="button" class="glass-button px-4 py-1.5 rounded-lg text-xs" data-action="click->newsletter-editor#togglePreview">
+        Toggle Preview
+      </button>
+    </div>
+    <div data-newsletter-editor-target="editor">
+      <%= f.text_area :body, class: "glass-input w-full px-4 py-3 rounded-xl text-sm font-mono", rows: 16, placeholder: "<h1>Your newsletter content...</h1>" %>
+    </div>
+    <div data-newsletter-editor-target="preview" class="hidden">
+      <div class="preview-frame p-6 rounded-xl min-h-[300px]" data-newsletter-editor-target="previewContent">
+      </div>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <%= f.check_box :is_public, class: "w-4 h-4 rounded accent-purple-500", id: "is_public" %>
+    <label for="is_public" class="text-sm text-white/70">
+      Make this a public announcement (visible on the website)
+    </label>
+  </div>
+
+  <div class="flex items-center gap-3 pt-4">
+    <%= f.submit newsletter.persisted? ? "Update Newsletter" : "Create Newsletter", class: "gradient-button px-6 py-3 rounded-xl font-semibold text-sm cursor-pointer" %>
+    <a href="<%= admin_newsletters_path %>" class="glass-button px-6 py-3 rounded-xl text-sm font-medium">Cancel</a>
+  </div>
+<% end %>

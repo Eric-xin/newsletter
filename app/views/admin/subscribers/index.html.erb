@@ -1,0 +1,45 @@
+<div class="mb-8">
+  <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Subscribers</h1>
+  <p class="text-white/40 text-sm mt-1"><%= Subscriber.active.count %> active subscriber(s) out of <%= Subscriber.count %> total.</p>
+</div>
+
+<div class="glass-card-static rounded-2xl overflow-hidden">
+  <% if @subscribers.any? %>
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Status</th>
+          <th>Subscribed</th>
+          <th class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @subscribers.each do |subscriber| %>
+          <tr>
+            <td class="font-medium text-white/90"><%= subscriber.email %></td>
+            <td>
+              <% if subscriber.active? %>
+                <span class="badge badge-sent">Active</span>
+              <% else %>
+                <span class="badge badge-draft">Unsubscribed</span>
+              <% end %>
+            </td>
+            <td class="text-white/40 text-xs"><%= subscriber.subscribed_at&.strftime("%b %d, %Y %l:%M %p") %></td>
+            <td class="text-right">
+              <%= button_to "Remove", admin_subscriber_path(subscriber), method: :delete, class: "danger-button px-3 py-1.5 rounded-lg text-xs", form: { data: { turbo_confirm: "Remove this subscriber?" } } %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div class="p-16 text-center">
+      <div class="w-16 h-16 mx-auto mb-6 rounded-full bg-white/5 flex items-center justify-center">
+        <svg class="w-8 h-8 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      </div>
+      <h3 class="text-lg font-medium text-white/60 mb-2">No Subscribers Yet</h3>
+      <p class="text-white/30 text-sm">Share your newsletter to start getting subscribers.</p>
+    </div>
+  <% end %>
+</div>

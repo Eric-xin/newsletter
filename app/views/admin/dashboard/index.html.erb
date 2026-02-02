@@ -1,0 +1,84 @@
+<div class="mb-8">
+  <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">Dashboard</h1>
+  <p class="text-white/40 text-sm mt-1">Overview of your newsletter platform.</p>
+</div>
+
+<!-- Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+  <div class="stat-card">
+    <div class="flex items-center justify-between mb-4">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-600/20 flex items-center justify-center">
+        <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      </div>
+    </div>
+    <p class="text-3xl font-bold text-white/90"><%= @total_subscribers %></p>
+    <p class="text-white/40 text-sm mt-1">Active Subscribers</p>
+  </div>
+
+  <div class="stat-card">
+    <div class="flex items-center justify-between mb-4">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500/20 to-purple-600/20 flex items-center justify-center">
+        <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+      </div>
+    </div>
+    <p class="text-3xl font-bold text-white/90"><%= @total_newsletters %></p>
+    <p class="text-white/40 text-sm mt-1">Total Newsletters</p>
+  </div>
+
+  <div class="stat-card">
+    <div class="flex items-center justify-between mb-4">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500/20 to-green-600/20 flex items-center justify-center">
+        <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+    </div>
+    <p class="text-3xl font-bold text-white/90"><%= @sent_newsletters %></p>
+    <p class="text-white/40 text-sm mt-1">Sent Newsletters</p>
+  </div>
+</div>
+
+<!-- Recent Newsletters -->
+<div class="glass-card-static rounded-2xl overflow-hidden">
+  <div class="p-6 border-b border-white/10 flex items-center justify-between">
+    <h2 class="text-lg font-semibold text-white/90">Recent Newsletters</h2>
+    <a href="<%= admin_newsletters_path %>" class="text-sm text-purple-400 hover:text-purple-300 transition-colors">View All</a>
+  </div>
+
+  <% if @recent_newsletters.any? %>
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Subject</th>
+          <th>Status</th>
+          <th>Visibility</th>
+          <th>Created</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @recent_newsletters.each do |newsletter| %>
+          <tr>
+            <td>
+              <a href="<%= admin_newsletter_path(newsletter) %>" class="text-white/90 hover:text-purple-300 transition-colors font-medium">
+                <%= newsletter.subject %>
+              </a>
+            </td>
+            <td>
+              <span class="badge badge-<%= newsletter.status %>"><%= newsletter.status.capitalize %></span>
+            </td>
+            <td>
+              <% if newsletter.is_public %>
+                <span class="badge badge-public">Public</span>
+              <% else %>
+                <span class="text-white/40 text-xs">Private</span>
+              <% end %>
+            </td>
+            <td class="text-white/40 text-xs"><%= newsletter.created_at.strftime("%b %d, %Y") %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div class="p-12 text-center text-white/30">
+      <p>No newsletters yet. <a href="<%= new_admin_newsletter_path %>" class="text-purple-400 hover:text-purple-300">Create your first one.</a></p>
+    </div>
+  <% end %>
+</div>
