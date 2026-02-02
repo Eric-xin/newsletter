@@ -32,7 +32,7 @@
   </div>
   <div class="p-6">
     <div class="preview-frame p-8 rounded-xl">
-      <%= @newsletter.body.html_safe %>
+      <%= sanitize(@newsletter.body) %>
     </div>
   </div>
 </div>

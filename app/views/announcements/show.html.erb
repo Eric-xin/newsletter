@@ -15,7 +15,7 @@
 
     <div class="p-8">
       <div class="preview-frame p-8 rounded-xl">
-        <%= @newsletter.body.html_safe %>
+        <%= sanitize(@newsletter.body) %>
       </div>
     </div>
   </div>
